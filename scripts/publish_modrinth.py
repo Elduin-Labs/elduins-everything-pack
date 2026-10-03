@@ -80,7 +80,9 @@ def multipart(fields, files):
 
 
 def find_project():
-    req = urllib.request.Request(f"{API}/project/{SLUG}", headers={"User-Agent": UA})
+    """Authenticated — a draft project 404s for anonymous callers."""
+    req = urllib.request.Request(f"{API}/project/{SLUG}",
+                                 headers={"User-Agent": UA, "Authorization": TOKEN})
     try:
         with urllib.request.urlopen(req, timeout=30) as r:
             return json.load(r)
@@ -125,7 +127,9 @@ if os.path.exists("icon.png"):
          raw=open("icon.png", "rb").read(), ctype="image/png")
     print("icon uploaded")
 
-existing = {v["version_number"] for v in call("GET", f"/project/{pid}/version")}
+versions = call("GET", f"/project/{pid}/version")
+vid = next((v["id"] for v in versions if v["version_number"] == VERSION), None)
+existing = {v["version_number"] for v in versions}
 if VERSION in existing:
     print(f"version {VERSION} is already up — nothing to upload")
 else:
@@ -147,7 +151,14 @@ else:
                             [("file", os.path.basename(PACK), blob,
                               "application/x-modrinth-modpack+zip")])
     v = call("POST", "/version", raw=body, ctype=ctype)
-    print("uploaded version:", v["id"])
+    vid = v["id"]
+    print("uploaded version:", vid)
+
+for target in (f"https://api.modrinth.com/v3/project/{pid}",
+               f"https://api.modrinth.com/v3/version/{vid}" if vid else None):
+    if target:
+        call("PATCH", target, data={"environment": "client_and_server"})
+print("environment set")
 
 if project.get("status") == "draft":
     call("PATCH", f"/project/{pid}", data={"status": "processing"})
