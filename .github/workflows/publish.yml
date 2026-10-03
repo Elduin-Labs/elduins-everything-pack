@@ -1,0 +1,43 @@
+# Publishes the pack to Modrinth. The key lives in the Elduin-Labs org secret
+# MODRINTH_TOKEN and is only ever read here, inside the runner.
+#
+# Creating a project for the first time needs a token with the project-create
+# scope. A CI token that can only upload versions will fail at that step and say
+# so — it will never run green having uploaded nothing.
+name: Publish to Modrinth
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Pack version to publish"
+        required: true
+        default: "1.0.0"
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Check the key is there
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+        run: |
+          if [ -z "$MODRINTH_TOKEN" ]; then
+            echo "::error::MODRINTH_TOKEN is not available to this repository."
+            exit 1
+          fi
+          echo "key present"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Publish
+        env:
+          MODRINTH_TOKEN: ${{ secrets.MODRINTH_TOKEN }}
+          PACK_VERSION: ${{ inputs.version }}
+        run: |
+          python3 scripts/publish_modrinth.py \
+            "elduins-everything-${PACK_VERSION}.mrpack"
