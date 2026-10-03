@@ -1,5 +1,7 @@
 # Elduin's Everything Pack
 
+<img src="icon.png" width="128" align="right">
+
 Every mod Elduin has made, in one pack, with every optimization mod that plays
 nicely alongside them.
 
