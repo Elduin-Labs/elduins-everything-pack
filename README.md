@@ -13,6 +13,11 @@ nicely alongside them.
 - **13 other mods** his mods need or he plays with, linked from Modrinth
 - **28 optimization mods** — Lithium, FerriteCore, Entity Culling,
   ImmediatelyFast, More Culling, Sodium Extra, Krypton and the rest
+- **8 libraries** those mods need to run — Cloth Config, Fabric Language Kotlin,
+  Puzzles Lib, Forge Config API Port, Resourceful Config, Fzzy Config,
+  MidnightLib and Almanac
+
+80 mods in total, and every required dependency is accounted for.
 
 Mods tagged "optimization" that fight each other are deliberately left out.
 VulkanMod can't run beside Sodium, and Nvidium needs an Nvidia graphics card, so
@@ -20,7 +25,7 @@ neither is here.
 
 ## How to play it
 
-Download `elduins-everything-1.0.0.mrpack` from the
+Download `elduins-everything-1.0.1.mrpack` from the
 [releases page](https://github.com/Elduin-Labs/elduins-everything-pack/releases),
 then drag it onto the [Modrinth App](https://modrinth.com/app). It makes an
 instance, fetches the linked mods itself, and unpacks Elduin's own mods inside.
